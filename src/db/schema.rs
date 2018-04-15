@@ -1,30 +1,36 @@
 table! {
     users (id) {
-        id -> Integer,
+        id -> BigInt,
         name -> Text,
     }
 }
 
 table! {
     playlists (id) {
-        id -> Integer,
+        id -> BigInt,
         name -> Text,
     }
 }
 
 table! {
     entries (id) {
-        id -> Integer,
+        id -> BigInt,
         url -> Text,
     }
 }
 
+table! {
+    chats (id) {
+        id -> BigInt,
+        playlist_name -> Text,
+    }
+}
 
 table! {
     users_playlists (id) {
-        id -> Integer,
-        user_id -> Integer,
-        playlist_id -> Integer,
-        last_entry_id -> Integer,
+        id -> BigInt,
+        user_id -> BigInt,
+        playlist_id -> BigInt,
+        last_entry_id -> BigInt,
     }
 }

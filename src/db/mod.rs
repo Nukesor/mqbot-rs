@@ -6,11 +6,8 @@ use settings::get_settings;
 
 pub fn establish_connection() -> SqliteConnection {
     let settings = get_settings();
-    let url_result = settings.get("database_url");
-    if url_result.is_none() {
-        panic!("No setting for database_url in config.toml");
-    }
-    let url = url_result.unwrap();
+    let url = settings.get("database_url")
+        .expect("No setting for database_url in config.toml");
 
     println!("Using database url: {}", url);
     SqliteConnection::establish(&url)

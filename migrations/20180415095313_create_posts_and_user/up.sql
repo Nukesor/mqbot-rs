@@ -19,6 +19,6 @@ CREATE TABLE users_playlists (
     user_id INT NOT NULL,
     playlist_id INT NOT NULL,
     last_entry_id INT NOT NULL DEFAULT 0,
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(playlist_id) REFERENCES playlists(id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (playlist_id) REFERENCES playlists(id)
 );

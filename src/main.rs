@@ -2,6 +2,7 @@ extern crate config;
 extern crate futures;
 extern crate tokio_core;
 extern crate telegram_bot;
+#[macro_use] extern crate indoc;
 #[macro_use] extern crate diesel;
 #[macro_use] extern crate diesel_migrations;
 
@@ -23,9 +24,9 @@ fn main() {
         &connection, &mut std::io::stdout());
 
     if result.is_err() {
+        println!("Migration failed.");
         panic!("Error: {:?}", result);
-        panic!("Migration failed");
     }
 
-    start_mq_bot(&connection);
+    start_mq_bot();
 }
