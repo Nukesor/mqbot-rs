@@ -29,19 +29,21 @@ fn process_message(api: Api, message: Message) {
             Chat::update_or_create(chat_id, &playlist_name, &connection);
 
             let response = format!("This chat now uses the playlist: {}", playlist_name);
-            api.spawn(message.text_reply(response));
+            api.spawn(message.chat.text(response));
         }
         else if data.starts_with("/info") {
             let chat_id = message.chat.id().into();
             let result = Chat::get(chat_id, &connection);
             if result.is_err() {
                 let response = "There is no playlist for this chat yet. Use /setPlaylist";
-                api.spawn(message.text_reply(response));
+                api.spawn(message.chat.text(response));
+
+                return
             }
             let chat = result.unwrap();
 
-            let response = format!("This chat uses the paylist: {}", chat.playlist_name);
-            api.spawn(message.text_reply(response));
+            let response = format!("This chat ({}) uses the paylist: {}", chat_id, chat.playlist_name);
+            api.spawn(message.chat.text(response));
         }
         else if data.starts_with("/help") {
             let response = indoc!("
@@ -49,12 +51,14 @@ fn process_message(api: Api, message: Message) {
             These are the available commands:
                 /add {url}
                     Add a new url to the playlist
+                /setPlaylist
+                    Set the playlist name for this chat
                 /info
                     Show the name of the current Playlist
                 /help
                     Show this message.
             ");
-            api.spawn(message.text_reply(response));
+            api.spawn(message.chat.text(response));
         }
     }
 }

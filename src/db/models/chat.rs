@@ -1,6 +1,7 @@
 use diesel;
 use diesel::prelude::*;
 use diesel::result::Error;
+use diesel::pg::PgConnection;
 
 use db::schema::chats;
 
@@ -13,7 +14,7 @@ pub struct Chat {
 
 impl Chat {
 
-    pub fn get(id: i64, connection: &SqliteConnection) -> Result<Chat, Error> {
+    pub fn get(id: i64, connection: &PgConnection) -> Result<Chat, Error> {
         chats::dsl::chats
             .filter(chats::dsl::id.eq(id))
             .get_result::<Chat>(connection)
@@ -22,7 +23,7 @@ impl Chat {
     pub fn update_or_create(
         id: i64,
         playlist_name: &str,
-        connection: &SqliteConnection) {
+        connection: &PgConnection) {
         // See if we already have a chat with this id.
         let result = chats::dsl::chats
             .filter(chats::dsl::id.eq(id))

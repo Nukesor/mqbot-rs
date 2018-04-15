@@ -1,6 +1,7 @@
 use diesel;
 use diesel::prelude::*;
 use diesel::result::Error;
+use diesel::pg::PgConnection;
 
 use db::schema::playlists;
 
@@ -12,17 +13,17 @@ pub struct Playlist {
 
 impl Playlist {
 
-    pub fn get(playlist_name: &str, connection: &SqliteConnection) -> Result<Playlist, Error> {
+    pub fn get(playlist_name: &str, connection: &PgConnection) -> Result<Playlist, Error> {
         playlists::dsl::playlists
-            .filter(playlists::dsl::name.eq(playlist_name))
+            .filter(playlists::dsl::name.eq(playlist_name.to_string()))
             .get_result::<Playlist>(connection)
     }
 
-    pub fn get_or_create(playlist_name: &str, connection: &SqliteConnection) -> Playlist{
+    pub fn get_or_create(playlist_name: &str, connection: &PgConnection) -> Playlist{
         let result = Playlist::get(playlist_name, connection);
         // A playlist with this name exists. Return the result.
         if result.is_ok() {
-            return result.unwrap()
+            return result.unwrap();
         }
 
         //There is no playlist with this name. Create a new one
