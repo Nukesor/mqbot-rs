@@ -1,4 +1,4 @@
-#Mediaq-rs
+# Mediaq-rs
 
 This is a Rust clone of the [Mediaqbot](https://github.com/raffomania/mediaqbot) written by [Hans-Ole Hatzel](https://github.com/hatzel).
 
