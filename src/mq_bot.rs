@@ -24,7 +24,7 @@ fn process_message(api: Api, message: Message) {
 
             let result = Chat::get(chat_id, &connection);
             if result.is_err() {
-                let response = "There is no playlist for this chat yet. Use /setPlaylist";
+                let response = "There is no playlist set for this chat yet. Use /setPlaylist";
                 api.spawn(message.chat.text(response));
 
                 return
@@ -34,8 +34,8 @@ fn process_message(api: Api, message: Message) {
             Entry::new(chat.playlist_name, url, &connection)
         }
 
-        // Set the playlist for this chat
-        // We create a new one, in case the specified playlist doesn't exist
+        // Set the playlist for this chat.
+        // We create a new one, in case the specified playlist doesn't exist.
         else if data.starts_with("/setPlaylist") {
             let mut playlist_name = data.replace("/setPlaylist", "");
             playlist_name = playlist_name.trim().to_string();
@@ -54,7 +54,7 @@ fn process_message(api: Api, message: Message) {
         else if data.starts_with("/info") {
             let chat_id = message.chat.id().into();
             // Check if we already know this chat.
-            // If we don't know this chat, the user has to specify a playlist.
+            // In case we don't, the user needs to specify a playlist.
             let result = Chat::get(chat_id, &connection);
             if result.is_err() {
                 let response = "There is no playlist for this chat yet. Use /setPlaylist";
@@ -69,7 +69,7 @@ fn process_message(api: Api, message: Message) {
             api.spawn(message.chat.text(response));
         }
 
-        // Print a help message with all available commands
+        // Send a help message with all available commands.
         else if data.starts_with("/help") {
             let response = indoc!("
             Hi there. This is the mqbot.
