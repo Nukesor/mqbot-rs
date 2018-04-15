@@ -3,3 +3,4 @@ DROP TABLE user_playlist;
 DROP TABLE users;
 DROP TABLE playlist;
 DROP TABLE users;
+DROP TABLE chats;

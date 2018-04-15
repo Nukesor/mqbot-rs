@@ -5,8 +5,9 @@ use futures::Stream;
 use settings::get_settings;
 
 use db::establish_connection;
-use db::models::playlist::Playlist;
 use db::models::chat::Chat;
+use db::models::entry::Entry;
+use db::models::playlist::Playlist;
 
 fn process_message(api: Api, message: Message) {
     if let MessageKind::Text {ref data, ..} = message.kind {
@@ -19,20 +20,8 @@ fn process_message(api: Api, message: Message) {
         if data.starts_with("/add") {
             let mut url = data.replace("/add", "");
             url = url.trim().to_string();
-        }
-        else if data.starts_with("/setPlaylist") {
-            let mut playlist_name = data.replace("/setPlaylist", "");
-            playlist_name = playlist_name.trim().to_string();
-            let playlist = Playlist::get_or_create(&playlist_name, &connection);
-
             let chat_id = message.chat.id().into();
-            Chat::update_or_create(chat_id, &playlist_name, &connection);
 
-            let response = format!("This chat now uses the playlist: {}", playlist_name);
-            api.spawn(message.chat.text(response));
-        }
-        else if data.starts_with("/info") {
-            let chat_id = message.chat.id().into();
             let result = Chat::get(chat_id, &connection);
             if result.is_err() {
                 let response = "There is no playlist for this chat yet. Use /setPlaylist";
@@ -42,9 +31,45 @@ fn process_message(api: Api, message: Message) {
             }
             let chat = result.unwrap();
 
+            Entry::new(chat.playlist_name, url, &connection)
+        }
+
+        // Set the playlist for this chat
+        // We create a new one, in case the specified playlist doesn't exist
+        else if data.starts_with("/setPlaylist") {
+            let mut playlist_name = data.replace("/setPlaylist", "");
+            playlist_name = playlist_name.trim().to_string();
+
+            // Create the playlist and the chat objects.
+            let playlist = Playlist::get_or_create(&playlist_name, &connection);
+            let chat_id = message.chat.id().into();
+            Chat::update_or_create(chat_id, &playlist_name, &connection);
+
+            // Send the success response
+            let response = format!("This chat now uses the playlist: {}", playlist_name);
+            api.spawn(message.chat.text(response));
+        }
+
+        // Print a message with all infos.
+        else if data.starts_with("/info") {
+            let chat_id = message.chat.id().into();
+            // Check if we already know this chat.
+            // If we don't know this chat, the user has to specify a playlist.
+            let result = Chat::get(chat_id, &connection);
+            if result.is_err() {
+                let response = "There is no playlist for this chat yet. Use /setPlaylist";
+                api.spawn(message.chat.text(response));
+
+                return
+            }
+            let chat = result.unwrap();
+
+            // Send the info message.
             let response = format!("This chat ({}) uses the paylist: {}", chat_id, chat.playlist_name);
             api.spawn(message.chat.text(response));
         }
+
+        // Print a help message with all available commands
         else if data.starts_with("/help") {
             let response = indoc!("
             Hi there. This is the mqbot.

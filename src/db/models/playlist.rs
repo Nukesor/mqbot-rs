@@ -7,7 +7,6 @@ use db::schema::playlists;
 
 #[derive(Queryable)]
 pub struct Playlist {
-    pub id: i64,
     pub name: String,
 }
 
@@ -56,6 +55,6 @@ pub struct NewPlaylist {
 pub struct UsersPlaylists{
     pub id: i64,
     pub user_id: i64,
-    pub playlist_id: i64,
+    pub playlist_name: String,
     pub entry_id: i64,
 }

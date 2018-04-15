@@ -6,8 +6,7 @@ table! {
 }
 
 table! {
-    playlists (id) {
-        id -> BigInt,
+    playlists (name) {
         name -> Text,
     }
 }
@@ -15,6 +14,7 @@ table! {
 table! {
     entries (id) {
         id -> BigInt,
+        playlist_name -> Text,
         url -> Text,
     }
 }
@@ -30,7 +30,7 @@ table! {
     users_playlists (id) {
         id -> BigInt,
         user_id -> BigInt,
-        playlist_id -> BigInt,
+        playlist_name -> Text,
         last_entry_id -> BigInt,
     }
 }
