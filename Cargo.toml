@@ -1,5 +1,5 @@
 [package]
-name = "mediaq-rs"
+name = "mediaq"
 version = "0.1.0"
 authors = ["Arne Beer <arne@twobeer.de>"]
 

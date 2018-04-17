@@ -1,14 +1,68 @@
+extern crate mediaq;
+extern crate futures;
+extern crate tokio_core;
+extern crate telegram_bot;
+#[macro_use] extern crate indoc;
+#[macro_use] extern crate diesel_migrations;
+
+use futures::Stream;
 use telegram_bot::*;
 use tokio_core::reactor::Core;
 
-use futures::Stream;
-use settings::get_settings;
+use mediaq::settings::get_settings;
+use mediaq::db::establish_connection;
+use mediaq::db::models::chat::Chat;
+use mediaq::db::models::entry::Entry;
+use mediaq::db::models::playlist::Playlist;
 
-use db::establish_connection;
-use db::models::chat::Chat;
-use db::models::entry::Entry;
-use db::models::playlist::Playlist;
+embed_migrations!();
 
+/// Run migrations and start the telegram bot
+fn main() {
+    // Get a database connection;
+    let connection = establish_connection();
+
+    // Run all migrations and output the log to stdout.
+    let result = embedded_migrations::run_with_output(
+        &connection, &mut std::io::stdout());
+
+    if result.is_err() {
+        println!("Migration failed.");
+        panic!("Error: {:?}", result);
+    }
+
+    start_mq_bot();
+}
+
+/// Set up the mediaq bot and start polling
+pub fn start_mq_bot() {
+    // Get the settings from the config file.
+    let settings = get_settings();
+    let token_result = settings.get("telegram_token");
+    if token_result.is_none() {
+        panic!("No setting for telegram_token in config.toml");
+    }
+    let token = token_result.unwrap();
+
+    let mut core = Core::new().unwrap();
+    let api = Api::configure(token).build(core.handle()).unwrap();
+
+    // Fetch new updates via long poll method
+    let future = api.stream().for_each(|update| {
+        // Only look at new messages
+        if let UpdateKind::Message(message) = update.kind {
+            // Only consider text messages
+            process_message(api.clone(), message);
+        }
+
+        Ok(())
+    });
+
+    core.run(future).unwrap();
+}
+
+/// Process any incoming messages from telegram with the type Text.
+/// Check for each message if it is a command and if we support this command
 fn process_message(api: Api, message: Message) {
     if let MessageKind::Text {ref data, ..} = message.kind {
         if !data.starts_with("/") {
@@ -41,7 +95,7 @@ fn process_message(api: Api, message: Message) {
             playlist_name = playlist_name.trim().to_string();
 
             // Create the playlist and the chat objects.
-            let playlist = Playlist::get_or_create(&playlist_name, &connection);
+            Playlist::get_or_create(&playlist_name, &connection);
             let chat_id = message.chat.id().into();
             Chat::update_or_create(chat_id, &playlist_name, &connection);
 
@@ -76,7 +130,7 @@ fn process_message(api: Api, message: Message) {
             These are the available commands:
                 /add {url}
                     Add a new url to the playlist
-                /setPlaylist
+                /setPlaylist {name}
                     Set the playlist name for this chat
                 /info
                     Show the name of the current Playlist
@@ -86,30 +140,4 @@ fn process_message(api: Api, message: Message) {
             api.spawn(message.chat.text(response));
         }
     }
-}
-
-pub fn start_mq_bot() {
-    // Get the settings from the config file.
-    let settings = get_settings();
-    let token_result = settings.get("telegram_token");
-    if token_result.is_none() {
-        panic!("No setting for telegram_token in config.toml");
-    }
-    let token = token_result.unwrap();
-
-    let mut core = Core::new().unwrap();
-    let api = Api::configure(token).build(core.handle()).unwrap();
-
-    // Fetch new updates via long poll method
-    let future = api.stream().for_each(|update| {
-        // Only look at new messages
-        if let UpdateKind::Message(message) = update.kind {
-            // Only consider text messages
-            process_message(api.clone(), message);
-        }
-
-        Ok(())
-    });
-
-    core.run(future).unwrap();
 }
