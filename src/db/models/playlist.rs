@@ -5,13 +5,12 @@ use diesel::pg::PgConnection;
 
 use db::schema::playlists;
 
-#[derive(Queryable)]
+#[derive(Queryable, Associations)]
 pub struct Playlist {
     pub name: String,
 }
 
 impl Playlist {
-
     pub fn get(playlist_name: &str, connection: &PgConnection) -> Result<Playlist, Error> {
         playlists::dsl::playlists
             .filter(playlists::dsl::name.eq(playlist_name.to_string()))
@@ -48,13 +47,4 @@ impl Playlist {
 #[table_name = "playlists"]
 pub struct NewPlaylist {
     pub name: String,
-}
-
-
-#[derive(Queryable)]
-pub struct UsersPlaylists{
-    pub id: i64,
-    pub user_id: i64,
-    pub playlist_name: String,
-    pub entry_id: i64,
 }

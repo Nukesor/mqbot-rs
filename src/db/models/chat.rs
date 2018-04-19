@@ -4,8 +4,10 @@ use diesel::result::Error;
 use diesel::pg::PgConnection;
 
 use db::schema::chats;
+use db::models::playlist::Playlist;
 
-#[derive(Queryable)]
+#[derive(Identifiable, Queryable, Associations)]
+#[belongs_to(Playlist, foreign_key="playlist_name")]
 pub struct Chat {
     pub id: i64,
     pub playlist_name: String,
