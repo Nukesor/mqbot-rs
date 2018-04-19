@@ -1,12 +1,12 @@
 extern crate mediaq;
 #[macro_use] extern crate diesel_migrations;
 
-use mediaq::bot::start_mq_bot;
 use mediaq::db::establish_connection;
+use mediaq::server::factory::rocket_factory;
 
 embed_migrations!();
 
-/// Run migrations and start the telegram bot
+/// Run the mediaq server.
 fn main() {
     // Get a database connection;
     let connection = establish_connection();
@@ -20,6 +20,6 @@ fn main() {
         panic!("Error: {:?}", result);
     }
 
-    start_mq_bot();
+    let server = rocket_factory();
+    server.launch();
 }
-
