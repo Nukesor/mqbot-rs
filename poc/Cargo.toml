@@ -1,0 +1,11 @@
+[package]
+name = "poc"
+version = "0.1.0"
+authors = ["Sven-Hendrik Haase <svenstaro@gmail.com>"]
+
+[dependencies]
+tokio-process = "0.2"
+tokio-io = "0.1"
+tokio = "0.1"
+futures = "0.1"
+actix-web = "0.6"
