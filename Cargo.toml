@@ -3,6 +3,9 @@ name = "mediaq"
 version = "0.1.0"
 authors = ["Arne Beer <arne@twobeer.de>",
            "Sven-Hendrik Haase <svenstaro@gmail.com>"]
+repository = "https://github.com/nukesor/mediaq-rs"
+license = "MIT"
+keywords = ["telegram", "media", "queue", "bot"]
 
 [dependencies]
 telegram-bot = "0.6"

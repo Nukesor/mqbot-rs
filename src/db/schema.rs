@@ -1,6 +1,5 @@
 table! {
     users (id) {
-        id -> BigInt,
         name -> Text,
     }
 }

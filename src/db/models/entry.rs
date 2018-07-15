@@ -1,6 +1,7 @@
 use diesel;
 use diesel::prelude::*;
 use db::schema::entries;
+use db::schema::users_playlists;
 use diesel::pg::PgConnection;
 
 use db::models::playlist::Playlist;

@@ -1,7 +1,6 @@
 -- Your SQL goes here
 CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL
+    name TEXT PRIMARY KEY
 );
 
 CREATE TABLE playlists (
@@ -24,9 +23,9 @@ CREATE TABLE entries (
 
 CREATE TABLE users_playlists (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
+    user_name TEXT NOT NULL,
     playlist_name TEXT NOT NULL,
     last_entry_id BIGINT NOT NULL DEFAULT 0,
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_name) REFERENCES users(name),
     FOREIGN KEY (playlist_name) REFERENCES playlists(name)
 );
