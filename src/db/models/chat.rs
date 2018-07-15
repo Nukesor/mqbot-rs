@@ -15,7 +15,6 @@ pub struct Chat {
 
 
 impl Chat {
-
     pub fn get(id: i64, connection: &PgConnection) -> Result<Chat, Error> {
         chats::dsl::chats
             .filter(chats::dsl::id.eq(id))

@@ -1,7 +1,6 @@
 use diesel;
 use diesel::prelude::*;
 use db::schema::entries;
-use db::schema::users_playlists;
 use diesel::pg::PgConnection;
 
 use db::models::playlist::Playlist;
@@ -14,7 +13,6 @@ pub struct Entry {
     pub playlist_name: String,
     pub url: String,
 }
-
 
 impl Entry {
     pub fn new(playlist_name: String, url: String, connection: &PgConnection) {

@@ -1,5 +1,5 @@
 table! {
-    users (id) {
+    users (name) {
         name -> Text,
     }
 }
@@ -28,7 +28,7 @@ table! {
 table! {
     users_playlists (id) {
         id -> BigInt,
-        user_id -> BigInt,
+        user_name -> Text,
         playlist_name -> Text,
         last_entry_id -> BigInt,
     }

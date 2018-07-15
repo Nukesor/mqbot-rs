@@ -1,13 +1,12 @@
-use rocket_contrib::{Json, SerdeError};
-
 use db::establish_connection;
-use server::responses::{APIResponse, bad_request, created, ok};
+use db::models::user_playlist::UserPlaylist;
+use server::responses::{APIResponse, ok};
 
 
-#[get("/<playlist>/<name>")]
-pub fn get_next(playlist: String, name: String) -> Result<APIResponse, APIResponse> {
+#[get("/<playlist>/<user_name>")]
+pub fn get_next(playlist: String, user_name: String) -> Result<APIResponse, APIResponse> {
     let connection = establish_connection();
-    let entry = Entry::get_next(playlist, user_name)
+    let entry = UserPlaylist::get_next(playlist, user_name, &connection);
 
     Ok(ok())
 }
