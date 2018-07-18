@@ -32,8 +32,8 @@ pub fn start_server() {
     // Start http server
     server::new(move || {
         App::with_state(AppState { db: addr.clone() })
-            .resource("/{playlist_name}/{user_name}", |r| {
-                r.method(http::Method::GET).with(api::playlist::next_entry)
+            .resource("/entries/next/{playlist_name}/{user_name}", |r| {
+                r.method(http::Method::GET).with(api::playlist::next_entries)
             })
     }).bind("127.0.0.1:8080")
         .unwrap()

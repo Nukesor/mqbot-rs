@@ -25,14 +25,15 @@ impl UserPlaylist {
         playlist_name: String,
         user_name: String,
         connection: &PgConnection,
-    ) -> Result<Entry, Error> {
+    ) -> Result<Vec<Entry>, Error> {
         let user_playlist = up_dsl::users_playlists
             .filter(up_dsl::playlist_name.eq(playlist_name.to_string()))
             .filter(up_dsl::user_name.eq(playlist_name.to_string()))
-            .get_result::<UserPlaylist>(connection);
+            .get_result::<UserPlaylist>(connection)?;
 
         entries::dsl::entries
             .filter(entries::dsl::playlist_name.eq(playlist_name.to_string()))
-            .get_result::<Entry>(connection)
+            .filter(entries::dsl::id.ge(user_playlist.last_entry_id))
+            .get_results::<Entry>(connection)
     }
 }

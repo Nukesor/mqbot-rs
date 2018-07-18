@@ -5,7 +5,7 @@ use diesel::prelude::*;
 
 use db::models::playlist::Playlist;
 
-#[derive(Queryable, Associations)]
+#[derive(Serialize, Queryable, Associations)]
 #[table_name = "entries"]
 #[belongs_to(Playlist, foreign_key = "playlist_name")]
 pub struct Entry {

@@ -10,6 +10,8 @@ extern crate tokio_core;
 extern crate diesel;
 #[macro_use]
 extern crate indoc;
+#[macro_use]
+extern crate serde_derive;
 
 pub mod bot;
 pub mod db;
