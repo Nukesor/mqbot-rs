@@ -1,18 +1,17 @@
 use diesel;
+use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
-use diesel::pg::PgConnection;
 
-use db::schema::chats;
 use db::models::playlist::Playlist;
+use db::schema::chats;
 
 #[derive(Identifiable, Queryable, Associations)]
-#[belongs_to(Playlist, foreign_key="playlist_name")]
+#[belongs_to(Playlist, foreign_key = "playlist_name")]
 pub struct Chat {
     pub id: i64,
     pub playlist_name: String,
 }
-
 
 impl Chat {
     pub fn get(id: i64, connection: &PgConnection) -> Result<Chat, Error> {
@@ -21,10 +20,7 @@ impl Chat {
             .get_result::<Chat>(connection)
     }
 
-    pub fn update_or_create(
-        id: i64,
-        playlist_name: &str,
-        connection: &PgConnection) {
+    pub fn update_or_create(id: i64, playlist_name: &str, connection: &PgConnection) {
         // See if we already have a chat with this id.
         let result = chats::dsl::chats
             .filter(chats::dsl::id.eq(id))
@@ -37,7 +33,7 @@ impl Chat {
                 .execute(connection)
                 .expect("Failed to update playlist name for chat.");
 
-            return
+            return;
         }
 
         //There is no chat with this id yet. Create a new one.

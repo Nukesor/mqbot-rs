@@ -1,13 +1,13 @@
-use diesel;
-use diesel::prelude::*;
 use db::schema::entries;
+use diesel;
 use diesel::pg::PgConnection;
+use diesel::prelude::*;
 
 use db::models::playlist::Playlist;
 
 #[derive(Queryable, Associations)]
 #[table_name = "entries"]
-#[belongs_to(Playlist, foreign_key="playlist_name")]
+#[belongs_to(Playlist, foreign_key = "playlist_name")]
 pub struct Entry {
     pub id: i64,
     pub playlist_name: String,

@@ -2,11 +2,11 @@ use futures::Stream;
 use telegram_bot::*;
 use tokio_core::reactor::Core;
 
-use settings::get_settings;
 use db::establish_connection;
 use db::models::chat::Chat;
 use db::models::entry::Entry;
 use db::models::playlist::Playlist;
+use settings::get_settings;
 
 /// Set up the mediaq bot and start polling
 pub fn start_mq_bot() {
@@ -38,7 +38,7 @@ pub fn start_mq_bot() {
 /// Process any incoming messages from telegram with the type Text.
 /// Check for each message if it is a command and if we support this command
 fn process_message(api: Api, message: Message) {
-    if let MessageKind::Text {ref data, ..} = message.kind {
+    if let MessageKind::Text { ref data, .. } = message.kind {
         if !data.starts_with("/") {
             return;
         }
@@ -55,13 +55,12 @@ fn process_message(api: Api, message: Message) {
                 let response = "There is no playlist set for this chat yet. Use /setPlaylist";
                 api.spawn(message.chat.text(response));
 
-                return
+                return;
             }
             let chat = result.unwrap();
 
             Entry::new(chat.playlist_name, url, &connection)
         }
-
         // Set the playlist for this chat.
         // We create a new one, in case the specified playlist doesn't exist.
         else if data.starts_with("/setPlaylist") {
@@ -77,7 +76,6 @@ fn process_message(api: Api, message: Message) {
             let response = format!("This chat now uses the playlist: {}", playlist_name);
             api.spawn(message.chat.text(response));
         }
-
         // Print a message with all infos.
         else if data.starts_with("/info") {
             let chat_id = message.chat.id().into();
@@ -88,18 +86,21 @@ fn process_message(api: Api, message: Message) {
                 let response = "There is no playlist for this chat yet. Use /setPlaylist";
                 api.spawn(message.chat.text(response));
 
-                return
+                return;
             }
             let chat = result.unwrap();
 
             // Send the info message.
-            let response = format!("This chat ({}) uses the paylist: {}", chat_id, chat.playlist_name);
+            let response = format!(
+                "This chat ({}) uses the paylist: {}",
+                chat_id, chat.playlist_name
+            );
             api.spawn(message.chat.text(response));
         }
-
         // Send a help message with all available commands.
         else if data.starts_with("/help") {
-            let response = indoc!("
+            let response = indoc!(
+                "
             Hi there. This is the mqbot.
             These are the available commands:
                 /add {url}
@@ -110,7 +111,8 @@ fn process_message(api: Api, message: Message) {
                     Show the name of the current Playlist
                 /help
                     Show this message.
-            ");
+            "
+            );
             api.spawn(message.chat.text(response));
         }
     }

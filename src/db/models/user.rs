@@ -5,12 +5,10 @@ pub struct User {
     pub name: String,
 }
 
-
-impl User {
-}
+impl User {}
 
 #[derive(Insertable)]
 #[table_name = "users"]
 pub struct NewUser {
-    pub name: String
+    pub name: String,
 }

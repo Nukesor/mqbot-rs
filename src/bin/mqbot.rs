@@ -1,5 +1,6 @@
 extern crate mediaq;
-#[macro_use] extern crate diesel_migrations;
+#[macro_use]
+extern crate diesel_migrations;
 
 use mediaq::bot::start_mq_bot;
 use mediaq::db::establish_connection;
@@ -12,8 +13,7 @@ fn main() {
     let connection = establish_connection();
 
     // Run all migrations and output the log to stdout.
-    let result = embedded_migrations::run_with_output(
-        &connection, &mut std::io::stdout());
+    let result = embedded_migrations::run_with_output(&connection, &mut std::io::stdout());
 
     if result.is_err() {
         println!("Migration failed.");
@@ -22,4 +22,3 @@ fn main() {
 
     start_mq_bot();
 }
-

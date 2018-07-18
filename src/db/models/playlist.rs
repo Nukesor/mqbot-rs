@@ -1,7 +1,7 @@
 use diesel;
+use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
-use diesel::pg::PgConnection;
 
 use db::schema::playlists;
 
@@ -17,7 +17,7 @@ impl Playlist {
             .get_result::<Playlist>(connection)
     }
 
-    pub fn get_or_create(playlist_name: &str, connection: &PgConnection) -> Playlist{
+    pub fn get_or_create(playlist_name: &str, connection: &PgConnection) -> Playlist {
         let result = Playlist::get(playlist_name, connection);
         // A playlist with this name exists. Return the result.
         if result.is_ok() {
@@ -40,8 +40,6 @@ impl Playlist {
             .expect("No playlist despite just adding the playlist.")
     }
 }
-
-
 
 #[derive(Insertable)]
 #[table_name = "playlists"]

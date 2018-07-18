@@ -1,3 +1,3 @@
 mod api;
-#[allow(dead_code)] mod responses;
+mod db;
 pub mod factory;

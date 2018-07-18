@@ -1,16 +1,17 @@
 #![feature(plugin)]
-#![plugin(rocket_codegen)]
+extern crate actix;
+extern crate actix_web;
 extern crate config;
 extern crate futures;
-extern crate rocket;
-extern crate tokio_core;
+extern crate r2d2;
 extern crate telegram_bot;
-#[macro_use] extern crate diesel;
-#[macro_use] extern crate indoc;
-#[macro_use] extern crate rocket_contrib;
+extern crate tokio_core;
+#[macro_use]
+extern crate diesel;
+#[macro_use]
+extern crate indoc;
 
-
-pub mod db;
 pub mod bot;
+pub mod db;
 pub mod server;
 pub mod settings;
