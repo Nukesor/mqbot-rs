@@ -9,16 +9,16 @@ mod video_viewer;
 use playlist::Playlist;
 use video_viewer::VideoViewer;
 
-struct Model { }
+struct Root { }
 
 enum Msg { }
 
-impl Component for Model {
+impl Component for Root {
     type Message = Msg;
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Model { }
+        Root { }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -27,24 +27,25 @@ impl Component for Model {
     }
 }
 
-impl Renderable<Model> for Model {
+impl Renderable<Root> for Root {
     fn view(&self) -> Html<Self> {
         html! {
-            <p>{ "outa" }</p>
-            <div class="mqbot",>
-                <div class="playlist",>
-                    <Playlist: />
+            <section class="section",>
+                <div class="container",>
+                    <h1 class="title",>{ "mqbot" }</h1>
+                    <p class="subtitle",>{ "hallo arne" }</p>
+                    <div class="columns",>
+                      <div class="column is-one-third playlist",><Playlist: /></div>
+                      <div class="column viewport",><VideoViewer: /></div>
+                    </div>
                 </div>
-                <div class="viewport",>
-                    <VideoViewer: />
-                </div>
-            </div>
+            </section>
         }
     }
 }
 
 fn main() {
     yew::initialize();
-    App::<Model>::new().mount_to_body();
+    App::<Root>::new().mount_to_body();
     yew::run_loop();
 }
