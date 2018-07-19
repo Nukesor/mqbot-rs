@@ -1,3 +1,5 @@
+#![recursion_limit="128"]
+
 #[macro_use]
 extern crate yew;
 use yew::prelude::*;
@@ -35,8 +37,8 @@ impl Renderable<Root> for Root {
                     <h1 class="title",>{ "mqbot" }</h1>
                     <p class="subtitle",>{ "hallo arne" }</p>
                     <div class="columns",>
-                      <div class="column is-one-third playlist",><Playlist: /></div>
-                      <div class="column viewport",><VideoViewer: /></div>
+                      <div class="column is-one-third",><Playlist: /></div>
+                      <div class="column",><VideoViewer: /></div>
                     </div>
                 </div>
             </section>

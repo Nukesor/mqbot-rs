@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cargo web start --open --auto-reload --use-system-emscripten
+cargo web start --open --auto-reload --target wasm32-unknown-unknown

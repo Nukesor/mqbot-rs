@@ -10,7 +10,8 @@ pub struct Playlist {
 pub enum Msg {
     AddEntry,
     UpdateCurrentEntry(String),
-    EntryClicked(usize),
+    PlayEntry(usize),
+    DeleteEntry(usize),
     ClearPlaylist,
     NoOp,
 }
@@ -29,9 +30,9 @@ impl Component for Playlist {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
+    fn create(_props: Self::Properties, _: ComponentLink<Self>) -> Self {
         Playlist {
-            entries: vec![],
+            entries: vec!["https://bulma.io/".to_string()],
             current_entry: "".to_string(),
         }
     }
@@ -43,7 +44,8 @@ impl Component for Playlist {
                 self.current_entry.clear();
             },
             Msg::UpdateCurrentEntry(val) => self.current_entry = val,
-            Msg::EntryClicked(val) => println!("{}", val),
+            Msg::PlayEntry(val) => println!("{}", val),
+            Msg::DeleteEntry(val) => { self.entries.remove(val); },
             Msg::ClearPlaylist => self.entries.clear(),
             Msg::NoOp => {},
         }
@@ -54,34 +56,40 @@ impl Component for Playlist {
 impl Renderable<Playlist> for Playlist {
     fn view(&self) -> Html<Self> {
         let playlist_entry = |(i, val): (usize, &String)| html! {
-            <PlaylistEntry: title=val, onsignal=move |_| Msg::EntryClicked(i), />
+            <li>
+                <PlaylistEntry: title=val, onclick_entry=move |_| Msg::PlayEntry(i), onclick_delete=move |_| Msg::DeleteEntry(i), />
+            </li>
         };
         html! {
-            { for self.entries.iter().enumerate().map(playlist_entry) }
-            <div class="field",>
-                <label class="label",>{ "Media URL" }</label>
-                <div class="control",>
-                    <div class="field has-addons",>
-                        <div class="control",>
-                            <input value=&self.current_entry,
-                                class="input",
-                                type="text",
-                                placeholder="https://youtu.be/4dTvF53buTc",
-                                oninput=|e| Msg::UpdateCurrentEntry(e.value),
-                                onkeypress=|e| {
-                                    if e.key() == "Enter" { Msg::AddEntry } else { Msg::NoOp }
-                                },
-                            />
-                        </div>
-                        <div class="control",>
-                            <a onclick=|_| Msg::AddEntry, class="button is-info",>{ "Add" }</a>
+            <div class="playlist",>
+                <ul>
+                    { for self.entries.iter().enumerate().map(playlist_entry) }
+                </ul>
+                <div class="field",>
+                    <label class="label",>{ "Media URL" }</label>
+                    <div class="control",>
+                        <div class="field has-addons",>
+                            <div class="control",>
+                                <input value=&self.current_entry,
+                                    class="input",
+                                    type="text",
+                                    placeholder="https://youtu.be/4dTvF53buTc",
+                                    oninput=|e| Msg::UpdateCurrentEntry(e.value),
+                                    onkeypress=|e| {
+                                        if e.key() == "Enter" { Msg::AddEntry } else { Msg::NoOp }
+                                    },
+                                />
+                            </div>
+                            <div class="control",>
+                                <a onclick=|_| Msg::AddEntry, class="button is-info",>{ "Add" }</a>
+                            </div>
                         </div>
                     </div>
+                    <p class="help",>{ "Try any public media URL" }</p>
                 </div>
-                <p class="help",>{ "Try any public media URL" }</p>
-            </div>
-            <div class="control",>
-                <a class="button is-danger", onclick=|_| Msg::ClearPlaylist, >{ "Clear playlist" }</a>
+                <div class="control",>
+                    <a class="button is-danger", onclick=|_| Msg::ClearPlaylist, >{ "Clear playlist" }</a>
+                </div>
             </div>
         }
     }
