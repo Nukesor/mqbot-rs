@@ -1,7 +1,7 @@
 .PHONY: build
 build:
-	cargo web build --use-system-emscripten --release
+	cargo web build --target wasm32-unknown-unknown
 
 .PHONY: run
 run:
-	cargo web start --use-system-emscripten --release
+	cargo web start --target wasm32-unknown-unknown
